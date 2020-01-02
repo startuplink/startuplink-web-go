@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Main page</title>
+    <link rel="stylesheet" href="/static/css/all.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <form method="POST" action="/save-links">
+        <table class="links table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Link</th>
+                <th scope="col">Pinned</th>
+                <th scope="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <input type="submit" class="btn btn-primary save-links" value="Save">
+    </form>
+</div>
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/main.js"></script>
+</body>
+</html>
