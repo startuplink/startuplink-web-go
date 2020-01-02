@@ -15,8 +15,7 @@ type User struct {
 	Links []string
 }
 
-var templates = template.Must(template.ParseFiles(
-	"template/login.html", "template/main-page.html"))
+var templates = template.Must(template.ParseFiles("../template/login.html", "../template/main-page.html"))
 
 func main() {
 	db, err := bolt.Open("app.db", 0666, &bolt.Options{Timeout: 1 * time.Second})
