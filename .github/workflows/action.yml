@@ -20,7 +20,6 @@ jobs:
           go-version: 1.13
       - name: build and test backend
         run: |
-          cd app
           go test -mod=vendor -timeout=60s -covermode=count -coverprofile=$GITHUB_WORKSPACE/profile.cov_tmp ./...
       - name: install golangci-lint and goveralls
         run: |
