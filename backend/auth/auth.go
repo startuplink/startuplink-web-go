@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	oidc "github.com/coreos/go-oidc"
 	"github.com/dlyahov/startuplink-web-go/backend/app"
+	"github.com/dlyahov/startuplink-web-go/backend/model"
+	"github.com/dlyahov/startuplink-web-go/backend/store"
 	"golang.org/x/oauth2"
 	"log"
 	"net/http"
@@ -114,6 +116,28 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var storage = app.GetStorage()
+	user, err := (*storage).FindUser(profile["sub"].(string))
+
+	if err == store.ErrUserNotFound {
+		user = &model.User{
+			Id:    profile["sub"].(string),
+			Name:  profile["name"].(string),
+			Links: nil,
+		}
+		err := (*storage).SaveUser(user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if user == nil {
+		http.Error(w, "User not found", http.StatusInternalServerError)
+		return
+	}
+
+	session.Values["user"] = user
 	// Redirect to logged in page
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
