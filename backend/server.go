@@ -14,6 +14,7 @@ func StartServer() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/login", auth.LoginHandler)
+	r.HandleFunc("/logout", auth.LogoutHandler)
 	//r.HandleFunc("/logout", auth.LogoutHandler)
 	r.HandleFunc("/callback", auth.CallbackHandler)
 	r.Handle("/", negroni.New(
