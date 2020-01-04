@@ -43,7 +43,7 @@ func newAuthenticator() (*Authenticator, error) {
 func IsAuthenticated(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	session, err := app.GetSession(r)
 	if err != nil {
-		log.Println("Error occured:", err)
+		log.Println("Error occurred:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
