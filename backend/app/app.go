@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/gob"
+	"github.com/dlyahov/startuplink-web-go/backend/model"
 	"github.com/dlyahov/startuplink-web-go/backend/render"
 	"github.com/dlyahov/startuplink-web-go/backend/store"
 	"github.com/gorilla/sessions"
@@ -15,7 +16,7 @@ const sessionName = "auth-session"
 
 type App struct {
 	renderer *render.Renderer
-	session  *sessions.FilesystemStore
+	session  sessions.Store
 	storage  store.Storage
 }
 
@@ -26,7 +27,7 @@ func Init() {
 
 	storage, err := store.NewStorage(&bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
-		log.Fatal("couldn't open storage")
+		log.Println("couldn't open storage")
 		return
 	}
 	renderer := render.NewRenderer()
@@ -37,14 +38,15 @@ func Init() {
 	}
 
 	gob.Register(map[string]interface{}{})
+	gob.Register(&model.User{})
 }
 
 func GetSession(request *http.Request) (*sessions.Session, error) {
 	return app.session.Get(request, sessionName)
 }
 
-func GetStorage() *store.Storage {
-	return &app.storage
+func GetStorage() store.Storage {
+	return app.storage
 }
 
 func GetRenderer() *render.Renderer {

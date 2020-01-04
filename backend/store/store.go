@@ -29,7 +29,7 @@ func NewStorage(options *bolt.Options) (*BoltDb, error) {
 	log.Printf("Get bolt store with options %+v", options)
 	boltDb, err := bolt.Open(dbFileName, 0666, options)
 	if err != nil {
-		log.Fatal("Could not open database file")
+		log.Println("Could not open database file")
 		return nil, err
 	}
 	err = boltDb.Update(func(tx *bolt.Tx) error {
@@ -47,13 +47,13 @@ func NewStorage(options *bolt.Options) (*BoltDb, error) {
 	return &BoltDb{boltDb}, nil
 }
 
-func (boltDb *BoltDb) SaveUser(user model.User) error {
+func (boltDb *BoltDb) SaveUser(user *model.User) error {
 	db := boltDb.db
 	err := db.Update(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(userBuckets))
 		userJson, err := json.Marshal(user)
 		if err != nil {
-			log.Fatal("Could not marshal user to json")
+			log.Println("Could not marshal user to json")
 			return err
 		}
 		err = bucket.Put([]byte(user.Id), userJson)
@@ -64,12 +64,12 @@ func (boltDb *BoltDb) SaveUser(user model.User) error {
 	})
 
 	if err != nil {
-		log.Fatal("failed to save user")
+		log.Println("failed to save user")
 	}
 	return nil
 }
 
-func (boltDb *BoltDb) FindUser(id string) (model.User, error) {
+func (boltDb *BoltDb) FindUser(id string) (*model.User, error) {
 	db := boltDb.db
 
 	user := model.User{}
@@ -88,8 +88,8 @@ func (boltDb *BoltDb) FindUser(id string) (model.User, error) {
 	})
 
 	if err != nil {
-		log.Fatal("failed to save user")
-		return user, err
+		log.Println("failed to save user")
+		return &user, err
 	}
-	return user, nil
+	return &user, nil
 }
