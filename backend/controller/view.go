@@ -1,4 +1,4 @@
-package view
+package controller
 
 import (
 	"github.com/dlyahov/startuplink-web-go/backend/app"
@@ -15,12 +15,11 @@ func ShowLinks(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	value := session.Values["user"]
-	var user *model.User
-	var ok bool
-	if user, ok = value.(*model.User); !ok {
-		log.Println("Can not get user from session")
-		http.Error(writer, "Can not get user from session", http.StatusInternalServerError)
+	value := session.Values["user"].(*model.User)
+	user, err := app.GetStorage().FindUser(value.Id)
+	if err != nil {
+		log.Println("Can not get user info")
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

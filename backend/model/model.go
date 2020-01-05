@@ -1,14 +1,17 @@
 package model
 
-import "net/url"
+import (
+	"time"
+)
 
 type User struct {
-	Id    string
-	Name  string
-	Links []Link
+	Id           string    `json:"id"`
+	Name         string    `json:"name"`
+	Links        []Link    `json:"links"`
+	LastModified time.Time `json:"last_modified"`
 }
 
 type Link struct {
-	Url    url.URL
-	Pinned bool
+	Url    string `json:"url"`
+	Pinned bool   `json:"pinned"`
 }
