@@ -19,9 +19,11 @@ $(document).ready(function () {
             result.push({url: url, pinned: pinned});
         });
 
-        $.ajax("/save", {
+        var csrfToken = $('input[name="gorilla.csrf.Token"]').val();
+        $.ajax("/api/save", {
                 data: JSON.stringify(result),
                 contentType: 'application/json',
+                headers: {"X-CSRF-Token": csrfToken},
                 type: 'POST'
             }
         ).done(function () {
