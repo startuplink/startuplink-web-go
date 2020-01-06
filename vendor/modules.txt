@@ -4,6 +4,8 @@ github.com/codegangsta/negroni
 github.com/coreos/go-oidc
 # github.com/golang/protobuf v1.3.2
 github.com/golang/protobuf/proto
+# github.com/gorilla/csrf v1.6.2
+github.com/gorilla/csrf
 # github.com/gorilla/mux v1.7.3
 github.com/gorilla/mux
 # github.com/gorilla/securecookie v1.1.1
