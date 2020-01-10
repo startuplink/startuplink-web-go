@@ -12,6 +12,7 @@ require (
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/sessions v1.2.0
 	github.com/hasit/bolter v0.0.0-20191120181425-1300df1f290c // indirect
+	github.com/jessevdk/go-flags v1.4.0
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/pkg/errors v0.8.1

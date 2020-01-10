@@ -6,12 +6,16 @@ import (
 	"github.com/dlyahov/startuplink-web-go/backend/controller"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 )
 
-const authKey = "32-byte-long-auth-key"
+const (
+	authKey     = "32-byte-long-auth-key"
+	defaultPort = "8080"
+)
 
 func StartServer() {
 	r := mux.NewRouter()
@@ -46,7 +50,12 @@ func StartServer() {
 		negroni.Wrap(http.HandlerFunc(controller.SaveLinks)),
 	)).Methods("POST")
 
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", csrfMiddleware(r)))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+	log.Println("Start app on port: ", port)
+	log.Fatal(http.ListenAndServe(":"+port, csrfMiddleware(r)))
 }
 
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
