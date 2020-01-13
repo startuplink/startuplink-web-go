@@ -2,19 +2,14 @@ package app
 
 import (
 	"encoding/gob"
-	"fmt"
 	"github.com/dlyahov/startuplink-web-go/backend/model"
 	"github.com/dlyahov/startuplink-web-go/backend/render"
 	"github.com/dlyahov/startuplink-web-go/backend/store"
 	"github.com/gorilla/sessions"
 	"github.com/jessevdk/go-flags"
-	bolt "go.etcd.io/bbolt"
 	"log"
 	"net/http"
-	"time"
 )
-
-const sessionName = "auth-session"
 
 type Auth0Config struct {
 	Auth0ClientId     string `long:"auth0 client id" env:"AUTH0_CLIENT_ID" description:"client id of auht0"`
@@ -35,12 +30,14 @@ var (
 	app      App
 )
 
+const (
+	sessionName = "auth-session"
+)
+
 func Init() {
-	fmt.Printf("remark42-memory module %s\n", revision)
+	session := sessions.NewCookieStore([]byte("secret"))
 
-	session := sessions.NewFilesystemStore("", []byte("secret"))
-
-	storage, err := store.NewStorage(&bolt.Options{Timeout: 1 * time.Second})
+	storage, err := store.NewStorage()
 	if err != nil {
 		log.Fatal("couldn't open storage")
 	}

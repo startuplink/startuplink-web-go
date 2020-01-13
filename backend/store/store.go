@@ -3,12 +3,20 @@ package store
 import (
 	"encoding/json"
 	"github.com/dlyahov/startuplink-web-go/backend/model"
+	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
 	bolt "go.etcd.io/bbolt"
 	"log"
+	"os"
+	"time"
 )
 
 const dbFileName = "app.db"
+
+type BoltConfig struct {
+	Path    string        `long:"path" env:"STORE_BOLT_DB" default:"./var" description:"parent dir for bolt files"`
+	Timeout time.Duration `long:"timeout" env:"TIMEOUT" default:"30s" description:"bolt timeout in milliseconds"`
+}
 
 type Storage interface {
 	SaveUser(user *model.User) error
@@ -25,9 +33,22 @@ type BoltDb struct {
 
 const userBuckets = "users"
 
-func NewStorage(options *bolt.Options) (*BoltDb, error) {
-	log.Printf("Get bolt store with options %+v", options)
-	boltDb, err := bolt.Open(dbFileName, 0666, options)
+func NewStorage() (*BoltDb, error) {
+	boltConfig := &BoltConfig{}
+	if _, err := flags.Parse(boltConfig); err != nil {
+		log.Println("Could not parse bolt db configuration")
+		return nil, err
+	}
+
+	if _, err := os.Stat(boltConfig.Path); os.IsNotExist(err) {
+		if err := os.Mkdir(boltConfig.Path, 0700); err != nil {
+			log.Println("Cannot create bolt db path. ", err)
+			return nil, err
+		}
+	}
+	dbPath := boltConfig.Path + "/" + dbFileName
+	options := &bolt.Options{Timeout: boltConfig.Timeout * time.Millisecond}
+	boltDb, err := bolt.Open(dbPath, 0666, options)
 	if err != nil {
 		log.Println("Could not open database file")
 		return nil, err
@@ -64,7 +85,8 @@ func (boltDb *BoltDb) SaveUser(user *model.User) error {
 	})
 
 	if err != nil {
-		log.Println("failed to save user")
+		log.Println("failed to save user. ", err)
+		return err
 	}
 	return nil
 }
@@ -88,7 +110,7 @@ func (boltDb *BoltDb) FindUser(id string) (*model.User, error) {
 	})
 
 	if err != nil {
-		log.Println("failed to save user")
+		log.Println("failed to find user. ", err)
 		return &user, err
 	}
 	return &user, nil

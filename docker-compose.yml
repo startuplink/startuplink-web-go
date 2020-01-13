@@ -8,7 +8,7 @@ services:
     hostname: "startuplink-web"
     restart: always
     ports:
-      - "80:8080"
+      - "8080:8080"
 
     volumes:
       - ./var:/backend/var
