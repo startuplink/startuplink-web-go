@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build docker image
-        run: docker build --build-arg --build-arg CI=github .
+        run: docker build --build-arg CI=github .
 
       - uses: actions/checkout@master
       - name: Publish to Registry
