@@ -9,6 +9,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	"log"
 	"net/http"
+	"os"
 )
 
 type Auth0Config struct {
@@ -23,6 +24,7 @@ type App struct {
 	session     sessions.Store
 	storage     store.Storage
 	auth0Config *Auth0Config
+	profile     Profile
 }
 
 var (
@@ -49,11 +51,20 @@ func Init() {
 		log.Fatal("couldn't parse authentication config. ", err.Error())
 	}
 	checkConfig(auth0Config)
+
+	profileName := os.Getenv("PROFILE")
+	profile, err := getProfile(profileName)
+	if err != nil {
+		log.Fatal("couldn't get profile. ", err.Error())
+	}
+
+	log.Println("profile is active: ", profile)
 	app = App{
 		renderer:    renderer,
 		session:     session,
 		storage:     storage,
 		auth0Config: auth0Config,
+		profile:     profile,
 	}
 
 	gob.Register(map[string]interface{}{})
@@ -89,4 +100,8 @@ func GetRenderer() *render.Renderer {
 
 func GetAuth0Config() *Auth0Config {
 	return app.auth0Config
+}
+
+func GetProfile() Profile {
+	return app.profile
 }

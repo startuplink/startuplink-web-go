@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/codegangsta/negroni"
+	"github.com/dlyahov/startuplink-web-go/backend/app"
 	"github.com/dlyahov/startuplink-web-go/backend/auth"
 	"github.com/dlyahov/startuplink-web-go/backend/controller"
 	"log"
@@ -36,12 +37,18 @@ func StartServer() {
 	http.Handle("/", r)
 	log.Print("Server listening on http://localhost:8080/")
 
-	csrfMiddleware := csrf.Protect(
-		[]byte(authKey),
+	var csrfMiddleware mux.MiddlewareFunc
 
-		// todo: remove from prod version
-		csrf.Secure(false),
-	)
+	if app.GetProfile() == app.LOCAL {
+		csrfMiddleware = csrf.Protect(
+			[]byte(authKey),
+			csrf.Secure(false),
+		)
+	} else {
+		csrfMiddleware = csrf.Protect(
+			[]byte(authKey),
+		)
+	}
 	api := r.PathPrefix("/api").Subrouter()
 	api.Use(csrfMiddleware)
 
