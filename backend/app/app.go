@@ -28,8 +28,8 @@ type App struct {
 }
 
 var (
-	revision = "unknown"
-	app      App
+	//revision = "unknown"
+	app App
 )
 
 const (
