@@ -12,13 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build docker image
-        run: docker build --build-arg CI=github .
-
-      - uses: actions/checkout@master
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: aemdeveloper/startuplink-web-go
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          snapshot: true
+        run: |
+          ls .. -lah
+#
+#      - uses: actions/checkout@master
+#      - name: Publish to Registry
+#        uses: elgohr/Publish-Docker-Github-Action@master
+#        with:
+#          name: aemdeveloper/startuplink-web-go
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_PASSWORD }}
+#          snapshot: true
