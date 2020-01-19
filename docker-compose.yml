@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  startuplink-web:
+    build: .
+    image: dliakhov/startuplink-web:latest
+    container_name: "startuplink-web"
+    hostname: "startuplink-web"
+    restart: always
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./var:/backend/var
+    env_file:
+      - .env.local

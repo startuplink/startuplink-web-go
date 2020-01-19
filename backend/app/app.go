@@ -6,39 +6,84 @@ import (
 	"github.com/dlyahov/startuplink-web-go/backend/render"
 	"github.com/dlyahov/startuplink-web-go/backend/store"
 	"github.com/gorilla/sessions"
-	bolt "go.etcd.io/bbolt"
+	"github.com/jessevdk/go-flags"
 	"log"
 	"net/http"
-	"time"
+	"os"
 )
 
-const sessionName = "auth-session"
-
-type App struct {
-	renderer *render.Renderer
-	session  sessions.Store
-	storage  store.Storage
+type Auth0Config struct {
+	Auth0ClientId     string `long:"auth0 client id" env:"AUTH0_CLIENT_ID" description:"client id of auht0"`
+	Auth0ClientSecret string `long:"auth0 client secret" env:"AUTH0_CLIENT_SECRET" description:"client secret of auht0"`
+	Auth0Domain       string `long:"auth0 domain" env:"AUTH0_DOMAIN" description:"domain of auth0 client"`
+	RedirectUrl       string `long:"redirect callback url" env:"AUTH0_CALLBACK_URL" description:"redirect callback url"`
 }
 
-var app App
+type App struct {
+	renderer    *render.Renderer
+	session     sessions.Store
+	storage     store.Storage
+	auth0Config *Auth0Config
+	profile     Profile
+}
+
+var (
+	//revision = "unknown"
+	app App
+)
+
+const (
+	sessionName = "auth-session"
+)
 
 func Init() {
-	session := sessions.NewFilesystemStore("", []byte("secret"))
+	session := sessions.NewCookieStore([]byte("secret"))
 
-	storage, err := store.NewStorage(&bolt.Options{Timeout: 1 * time.Second})
+	storage, err := store.NewStorage()
 	if err != nil {
-		log.Println("couldn't open storage")
-		return
+		log.Fatal("couldn't open storage")
 	}
 	renderer := render.NewRenderer()
+
+	auth0Config := &Auth0Config{}
+	_, err = flags.Parse(auth0Config)
+	if err != nil {
+		log.Fatal("couldn't parse authentication config. ", err.Error())
+	}
+	checkConfig(auth0Config)
+
+	profileName := os.Getenv("PROFILE")
+	profile, err := getProfile(profileName)
+	if err != nil {
+		log.Fatal("couldn't get profile. ", err.Error())
+	}
+
+	log.Println("profile is active: ", profile)
 	app = App{
-		renderer: renderer,
-		session:  session,
-		storage:  storage,
+		renderer:    renderer,
+		session:     session,
+		storage:     storage,
+		auth0Config: auth0Config,
+		profile:     profile,
 	}
 
 	gob.Register(map[string]interface{}{})
 	gob.Register(&model.User{})
+}
+
+func checkConfig(auth0Config *Auth0Config) {
+	if auth0Config.Auth0ClientId == "" {
+		panic("Client id is not specified")
+	}
+	if auth0Config.Auth0ClientSecret == "" {
+		panic("Client secret is not specified")
+	}
+	if auth0Config.RedirectUrl == "" {
+		panic("Redirect URL is not specified")
+	}
+	if auth0Config.Auth0Domain == "" {
+		panic("Domain is not specified")
+	}
 }
 
 func GetSession(request *http.Request) (*sessions.Session, error) {
@@ -51,4 +96,12 @@ func GetStorage() store.Storage {
 
 func GetRenderer() *render.Renderer {
 	return app.renderer
+}
+
+func GetAuth0Config() *Auth0Config {
+	return app.auth0Config
+}
+
+func GetProfile() Profile {
+	return app.profile
 }

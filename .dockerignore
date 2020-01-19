@@ -1,0 +1,25 @@
+/logs/
+/target/
+/var/
+/frontend/node_modules/
+/frontend/public/
+/.vscode/
+/.idea/
+/bin/
+
+# source files
+docker-compose.yml
+rest-client.env.json
+.env.example
+.gitignore
+*.iml
+
+# generated files
+*.cov
+.cover
+target
+debug
+debug.test
+*.prof
+*.test
+*.db
