@@ -11,10 +11,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: build docker image
-        run: docker build --build-arg CI=github .
-
       - uses: actions/checkout@master
+
+      - name: build docker image
+        run: docker build .
+
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
