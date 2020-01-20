@@ -30,3 +30,10 @@ jobs:
             --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
             --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck \
             --enable=ineffassign --enable=varcheck ./... ;
+      - name: run backend linters
+        run: |
+          cd backend
+          $GITHUB_WORKSPACE/golangci-lint run --out-format=tab --disable-all --tests=false --enable=unconvert \
+            --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
+            --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck \
+            --enable=ineffassign --enable=varcheck ./... ;
