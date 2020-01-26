@@ -5,12 +5,11 @@ import (
 	"github.com/dlyahov/startuplink-web-go/backend/app"
 	"github.com/dlyahov/startuplink-web-go/backend/auth"
 	"github.com/dlyahov/startuplink-web-go/backend/controller"
+	"github.com/gorilla/csrf"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/gorilla/csrf"
-	"github.com/gorilla/mux"
 )
 
 const (
@@ -33,6 +32,7 @@ func StartServer() {
 		http.FileServer(http.Dir("static/"))))
 
 	r.HandleFunc("/favicon.ico", faviconHandler)
+	r.HandleFunc("/ping", healthCheck)
 
 	http.Handle("/", r)
 	log.Print("Server listening on http://localhost:8080/")
@@ -67,4 +67,11 @@ func StartServer() {
 
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/favicon.ico")
+}
+
+func healthCheck(w http.ResponseWriter, r *http.Request) {
+	_, err := w.Write([]byte("OK"))
+	if err != nil {
+		log.Println("Error occurred during healthcheck handling request")
+	}
 }

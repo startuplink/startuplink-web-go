@@ -16,7 +16,6 @@ type Auth0Config struct {
 	Auth0ClientId     string `long:"auth0 client id" env:"AUTH0_CLIENT_ID" description:"client id of auht0"`
 	Auth0ClientSecret string `long:"auth0 client secret" env:"AUTH0_CLIENT_SECRET" description:"client secret of auht0"`
 	Auth0Domain       string `long:"auth0 domain" env:"AUTH0_DOMAIN" description:"domain of auth0 client"`
-	RedirectUrl       string `long:"redirect callback url" env:"AUTH0_CALLBACK_URL" description:"redirect callback url"`
 }
 
 type App struct {
@@ -77,9 +76,6 @@ func checkConfig(auth0Config *Auth0Config) {
 	}
 	if auth0Config.Auth0ClientSecret == "" {
 		panic("Client secret is not specified")
-	}
-	if auth0Config.RedirectUrl == "" {
-		panic("Redirect URL is not specified")
 	}
 	if auth0Config.Auth0Domain == "" {
 		panic("Domain is not specified")

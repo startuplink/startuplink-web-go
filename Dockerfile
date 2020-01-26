@@ -32,6 +32,7 @@ COPY --from=builder /build/backend/static /app/static
 COPY --from=builder /build/backend/template /app/template
 
 EXPOSE $PORT
+HEALTHCHECK --interval=30s --timeout=3s CMD curl --fail http://localhost:8080/ping || exit 1
 
 WORKDIR /app
 CMD ["./startuplink-web"]
