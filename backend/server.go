@@ -72,6 +72,6 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 func healthCheck(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write([]byte("OK"))
 	if err != nil {
-		log.Println("Error occured during healthcheck handling request")
+		log.Println("Error occurred during healthcheck handling request")
 	}
 }
