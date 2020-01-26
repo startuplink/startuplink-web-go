@@ -25,7 +25,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authenticator, err := newAuthenticator(r.RequestURI)
+	authenticator, err := newAuthenticator(r.Host)
 	if err != nil {
 		log.Println("Could not create authenticator object")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
