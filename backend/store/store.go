@@ -14,8 +14,8 @@ import (
 const dbFileName = "app.db"
 
 type BoltConfig struct {
-	Path    string        `long:"path" env:"STORE_BOLT_DB" default:"./var" description:"parent dir for bolt files"`
-	Timeout time.Duration `long:"timeout" env:"TIMEOUT" default:"30s" description:"bolt timeout in milliseconds"`
+	Path    string `long:"path" env:"STORE_BOLT_DB" default:"." description:"parent dir for bolt files"`
+	Timeout int    `long:"timeout" env:"TIMEOUT" default:"3000" description:"bolt timeout in milliseconds"`
 }
 
 type Storage interface {
@@ -47,7 +47,8 @@ func NewStorage() (*BoltDb, error) {
 		}
 	}
 	dbPath := boltConfig.Path + "/" + dbFileName
-	options := &bolt.Options{Timeout: boltConfig.Timeout * time.Millisecond}
+	options := &bolt.Options{Timeout: time.Duration(boltConfig.Timeout) * time.Millisecond}
+	log.Println("Bolt options: ", options)
 	boltDb, err := bolt.Open(dbPath, 0666, options)
 	if err != nil {
 		log.Println("Could not open database file")

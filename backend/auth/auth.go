@@ -15,7 +15,7 @@ type Authenticator struct {
 	Ctx      context.Context
 }
 
-func newAuthenticator() (*Authenticator, error) {
+func newAuthenticator(host string) (*Authenticator, error) {
 	ctx := context.Background()
 	config := app.GetAuth0Config()
 
@@ -28,10 +28,12 @@ func newAuthenticator() (*Authenticator, error) {
 	conf := oauth2.Config{
 		ClientID:     config.Auth0ClientId,
 		ClientSecret: config.Auth0ClientSecret,
-		RedirectURL:  config.RedirectUrl,
+		RedirectURL:  "http://" + host + "/callback",
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "profile"},
 	}
+
+	log.Println("Callback url: ", conf.RedirectURL)
 
 	return &Authenticator{
 		Provider: provider,

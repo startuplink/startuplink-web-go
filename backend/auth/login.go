@@ -32,7 +32,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authenticator, err := newAuthenticator()
+	authenticator, err := newAuthenticator(r.Host)
 	if err != nil {
 		log.Println("Could not create authenticator object")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
