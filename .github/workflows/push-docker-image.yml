@@ -29,10 +29,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script:
-            docker run -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
-              -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
-              -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
-              -e STORE_BOLT_DB=/backend/var/store \
-              -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
-              -p 80:8080 aemdeveloper/startuplink-web-go:latest
+          script: |
+            echo ${{ secrets.USERNAME }} > root.txt
+            docker run -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} -e STORE_BOLT_DB=/backend/var/store -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback -p 80:8080 aemdeveloper/startuplink-web-go:latest
