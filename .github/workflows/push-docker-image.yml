@@ -29,5 +29,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          script:
+          script: |
+            echo ${{ secrets.USERNAME }}
             ./startuptlink-web-go-update.sh
