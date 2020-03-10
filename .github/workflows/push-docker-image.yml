@@ -37,4 +37,4 @@ jobs:
               -e STORE_BOLT_DB=/backend/var/store \
               -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
               -v boltdb_store:/backend/var/store \
-              -p 80:8080 -d aemdeveloper/startuplink-web-go:latest
+              -p 80:8080 aemdeveloper/startuplink-web-go:latest
