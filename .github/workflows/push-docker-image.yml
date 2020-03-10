@@ -13,22 +13,43 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: build docker image
-        run: docker build .
+      - name: Get current date
+        id: date
+        run: |
+          echo "::set-output name=date::$(date +'%Y-%m-%d')"
+          echo "::set-output name=github_sha::$GITHUB_SHA"
+      
+      - name: Get image tag
+        id: image
+        run: |
+          echo "::set-output name=image_tag::${{ steps.date.outputs.date }}-${{ steps.date.outputs.github_sha }}"
 
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: aemdeveloper/startuplink-web-go
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          snapshot: true
-      - name: executing remote ssh commands using password
+      - name: Build docker image
+        run: |
+          docker build . --tag aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
+
+      - name: Deploy last image on instance
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            echo ${{ secrets.USERNAME }}
-            ./startuptlink-web-go-update.sh
+            docker volume create boltdb_store
+            if [ $(docker ps | grep ${{ secrets.CONTAINER_NAME }} | wc -l) -gt 0 ]
+            then
+              docker stop ${{ secrets.CONTAINER_NAME }}
+              docker rm --force ${{ secrets.CONTAINER_NAME }}
+              echo "Container stopped"
+            fi
+            docker run -d -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
+              --name ${{ secrets.CONTAINER_NAME }} \
+              -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
+              -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
+              -e STORE_BOLT_DB=/backend/var/store \
+              -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
+              -e PROFILE=local \
+              -v boltdb_store:/backend/var/store \
+              -p 80:8080 aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
