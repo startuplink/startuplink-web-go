@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   startuplink-web:
@@ -20,4 +20,8 @@ services:
       - PORT=8080
       - STORE_BOLT_DB=/backend/var/store
       - TIMEOUT=600
-
+    healthcheck:
+      test: curl --fail -s http://localhost:8080/ping || exit 1
+      interval: 30s
+      timeout: 3s
+      retries: 3
