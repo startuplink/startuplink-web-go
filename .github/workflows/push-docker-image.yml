@@ -31,13 +31,14 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             docker volume create boltdb_store
-            if [ $(docker ps | grep startupLinkWeb | wc -l) -gt 0 ]
+            if [ $(docker ps | grep ${{ secrets.CONTAINER_NAME }} | wc -l) -gt 0 ]
             then
-              docker stop startupLinkWeb
+              docker stop ${{ secrets.CONTAINER_NAME }}
+              docker rm --force ${{ secrets.CONTAINER_NAME }}
               echo "Container stopped"
             fi
             docker run -d -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
-              --name startupLinkWeb \
+              --name ${{ secrets.CONTAINER_NAME }} \
               -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
               -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
               -e STORE_BOLT_DB=/backend/var/store \
