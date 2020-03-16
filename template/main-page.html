@@ -34,7 +34,7 @@
             <tbody>
             {{range $index, $element := .user.Links}}
                 <tr class="d-flex link-group">
-                    <td class="col-1" scope="row">{{ $index }}</td>
+                    <td class="col-1" scope="row">{{ inc $index }}</td>
                     <td class="col-9"><input type="url" class="form-control url" value="{{.Url}}" required></td>
                     <td class="col-1"><input type="checkbox" class="form-control pinned" {{if .Pinned}} checked {{else}} {{end}}></td>
                     <td class="col-1"><a class="btn btn-danger remove-link"><i class="fas fa-eraser"></i></a></td>
