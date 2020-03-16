@@ -1,7 +1,4 @@
 $(document).ready(function () {
-    // update number of link
-    updateNumberOfListElements();
-
     // add handlers for buttons
     $('body').on('click', '.remove-link', function (event) {
         var $target = $(event.target);
@@ -58,9 +55,3 @@ $(document).ready(function () {
         )
     });
 });
-
-function updateNumberOfListElements() {
-    $(".links tbody td:first-child").each((i, element) => {
-        $(element).html(i + 1);
-    })
-}
