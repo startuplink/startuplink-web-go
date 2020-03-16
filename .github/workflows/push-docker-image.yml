@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: build docker image
-        run: docker build . --tag aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-${GITHUB_SHA::8}
+        run: docker build . --tag aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
 
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
@@ -22,6 +22,7 @@ jobs:
           name: aemdeveloper/startuplink-web-go
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: $(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
@@ -44,4 +45,4 @@ jobs:
               -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
               -e PROFILE=local \
               -v boltdb_store:/backend/var/store \
-              -p 80:8080 aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-${GITHUB_SHA::8}
+              -p 80:8080 aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
