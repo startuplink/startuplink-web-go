@@ -14,15 +14,11 @@ jobs:
       - uses: actions/checkout@master
 
       - name: build docker image
-        run: docker build . --tag aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
+        run: |
+          docker build . --tag aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u "{{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker push aemdeveloper/startuplink-web-go:$(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
 
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: aemdeveloper/startuplink-web-go
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: $(date +'%Y-%m-%d')-$(GITHUB_SHA::8)
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
