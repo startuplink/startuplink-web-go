@@ -13,7 +13,6 @@ type Renderer struct {
 }
 
 var cachedTemplates = []string{
-	"login.html",
 	"main-page.html",
 }
 
