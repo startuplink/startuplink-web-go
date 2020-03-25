@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	authKey     = "32-byte-long-auth-key"
-	defaultPort = "8080"
+	authKey            = "32-byte-long-auth-key"
+	defaultPort        = "8080"
+	PKI_VALIDATION_KEY = "PKI_VALIDATION_KEY"
 )
 
 func StartServer() {
@@ -78,7 +79,7 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func pkiValidationFile(w http.ResponseWriter, r *http.Request) {
-	validationKey := os.Getenv("PKI_VALIDATION_KEY")
+	validationKey := os.Getenv(PKI_VALIDATION_KEY)
 	if validationKey == "" {
 		log.Println("Validation key not found!")
 		_, err := w.Write([]byte("Validation key not found"))
