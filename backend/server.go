@@ -84,13 +84,13 @@ func pkiValidationFile(w http.ResponseWriter, r *http.Request) {
 		log.Println("Validation key not found!")
 		_, err := w.Write([]byte("Validation key not found"))
 		if err != nil {
-			log.Println("Error occured when handle endpoint of validation key")
+			log.Println("Error occurred when handle endpoint of validation key")
 		}
 		return
 	}
 
 	_, err := w.Write([]byte(validationKey))
 	if err != nil {
-		log.Println("Error occured when handle endpoint of validation key")
+		log.Println("Error occurred when handle endpoint of validation key")
 	}
 }
