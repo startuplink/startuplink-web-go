@@ -53,4 +53,4 @@ jobs:
               -e PROFILE=local \
               -e PKI_VALIDATION_KEY=${{ secrets.PKI_VALIDATION_KEY }} \
               -v boltdb_store:/backend/var/store \
-              -p 80:8080 aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
+              -p 8080:8080 aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
