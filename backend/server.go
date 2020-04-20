@@ -13,9 +13,8 @@ import (
 )
 
 const (
-	authKey            = "32-byte-long-auth-key"
-	defaultPort        = "8080"
-	PKI_VALIDATION_KEY = "PKI_VALIDATION_KEY"
+	authKey     = "32-byte-long-auth-key"
+	defaultPort = "8080"
 )
 
 func StartServer() {
@@ -34,7 +33,6 @@ func StartServer() {
 
 	r.HandleFunc("/favicon.ico", faviconHandler)
 	r.HandleFunc("/ping", healthCheck)
-	r.HandleFunc("/.well-known/pki-validation", pkiValidationFile)
 
 	http.Handle("/", r)
 	log.Print("Server listening on http://localhost:8080/")
@@ -75,22 +73,5 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write([]byte("OK"))
 	if err != nil {
 		log.Println("Error occurred during healthcheck handling request")
-	}
-}
-
-func pkiValidationFile(w http.ResponseWriter, r *http.Request) {
-	validationKey := os.Getenv(PKI_VALIDATION_KEY)
-	if validationKey == "" {
-		log.Println("Validation key not found!")
-		_, err := w.Write([]byte("Validation key not found"))
-		if err != nil {
-			log.Println("Error occurred when handle endpoint of validation key")
-		}
-		return
-	}
-
-	_, err := w.Write([]byte(validationKey))
-	if err != nil {
-		log.Println("Error occurred when handle endpoint of validation key")
 	}
 }
