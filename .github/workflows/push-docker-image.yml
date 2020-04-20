@@ -51,6 +51,5 @@ jobs:
               -e STORE_BOLT_DB=/backend/var/store \
               -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
               -e PROFILE=prod \
-              -e PKI_VALIDATION_KEY=${{ secrets.PKI_VALIDATION_KEY }} \
               -v boltdb_store:/backend/var/store \
               -p 8080:8080 aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
