@@ -49,6 +49,8 @@ jobs:
               -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
               -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
               -e STORE_BOLT_DB=/backend/var/store \
+              -e COOKIE_AUTH_KEY=${{ secrets.COOKIE_AUTH_KEY }} \
+              -e COOKIE_SECRET_KEY=${{ secrets.COOKIE_SECRET_KEY }} \
               -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
               -e PROFILE=prod \
               -e PKI_VALIDATION_KEY=${{ secrets.PKI_VALIDATION_KEY }} \

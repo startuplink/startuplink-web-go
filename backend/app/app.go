@@ -32,11 +32,19 @@ var (
 )
 
 const (
-	sessionName = "auth-session"
+	sessionName         = "auth-session"
+	cookieAuthKeyName   = "COOKIE_AUTH_KEY"
+	cookieSecretKeyName = "COOKIE_SECRET_KEY"
 )
 
 func Init() {
-	session := sessions.NewCookieStore([]byte("secret"))
+	session := sessions.NewCookieStore(
+		[]byte(os.Getenv(cookieAuthKeyName)),
+		[]byte(os.Getenv(cookieSecretKeyName)),
+	)
+	session.Options = &sessions.Options{
+		HttpOnly: true,
+	}
 
 	storage, err := store.NewStorage()
 	if err != nil {
