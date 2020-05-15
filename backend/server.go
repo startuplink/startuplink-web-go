@@ -23,7 +23,9 @@ func StartServer() {
 	r.HandleFunc("/login", auth.LoginHandler)
 	r.HandleFunc("/logout", auth.LogoutHandler)
 	r.HandleFunc("/callback", auth.CallbackHandler)
-	r.Handle("/", negroni.New(
+	r.HandleFunc("/", auth.GreetingHandler)
+
+	r.Handle("/home", negroni.New(
 		negroni.HandlerFunc(auth.IsAuthenticated),
 		negroni.Wrap(http.HandlerFunc(controller.ShowLinks)),
 	))

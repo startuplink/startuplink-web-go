@@ -14,8 +14,8 @@ import (
 func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := app.GetSession(r)
 	if err != nil {
-		log.Println("Could not retrieve user session")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println("Could not retrieve user session", err.Error())
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -27,8 +27,8 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	authenticator, err := newAuthenticator(r.Host)
 	if err != nil {
-		log.Println("Could not create authenticator object")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println("Could not create authenticator object", err.Error())
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -54,14 +54,15 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println("Failed to verify ID Token: " + err.Error())
-		http.Error(w, "Failed to verify ID Token: "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to verify ID Token", http.StatusInternalServerError)
 		return
 	}
 
 	// Getting now the userInfo
 	var profile map[string]interface{}
 	if err := idToken.Claims(&profile); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println("Failed to verify ID Token: " + err.Error())
+		http.Error(w, "Failed to verify ID Token", http.StatusInternalServerError)
 		return
 	}
 
@@ -80,7 +81,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		err := storage.SaveUser(user)
 		if err != nil {
 			log.Println("Can not save new user: " + err.Error())
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 	}
@@ -94,11 +95,11 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	err = session.Save(r, w)
 	if err != nil {
 		log.Println("Can not save user session: " + err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
 	log.Printf("User was found with id %s\n", user.Id)
 	// Redirect to logged in page
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }

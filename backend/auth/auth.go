@@ -46,7 +46,7 @@ func IsAuthenticated(w http.ResponseWriter, r *http.Request, next http.HandlerFu
 	session, err := app.GetSession(r)
 	if err != nil {
 		log.Println("Error occurred:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 

@@ -14,6 +14,7 @@ type Renderer struct {
 
 var cachedTemplates = []string{
 	"main-page.html",
+	"greeting.html",
 }
 
 func NewRenderer() *Renderer {

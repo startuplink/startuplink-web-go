@@ -12,7 +12,8 @@ func ShowLinks(writer http.ResponseWriter, request *http.Request) {
 	session, err := app.GetSession(request)
 	if err != nil {
 		log.Println("Can not get user session")
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		log.Printf("Error: %s", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -20,7 +21,8 @@ func ShowLinks(writer http.ResponseWriter, request *http.Request) {
 	user, err := app.GetStorage().FindUser(value.Id)
 	if err != nil {
 		log.Println("Can not get user info")
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		log.Printf("Error: %s", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
