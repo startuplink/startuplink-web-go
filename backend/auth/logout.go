@@ -14,7 +14,8 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	logoutUrl, err := url.Parse("https://" + domain)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println("Cannot parse url.", err.Error())
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -30,7 +31,8 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	returnTo, err := url.Parse(scheme + "://" + r.Host)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Println(w, "Cannot parse url.", err.Error())
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	parameters.Add("returnTo", returnTo.String())
@@ -40,7 +42,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := app.GetSession(r)
 	if err != nil {
 		log.Println("Error occurred:", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -49,7 +51,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	err = session.Save(r, w)
 	if err != nil {
 		log.Println("Can not save user session: " + err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(w, r, logoutUrl.String(), http.StatusTemporaryRedirect)

@@ -16,8 +16,8 @@ func SaveLinks(writer http.ResponseWriter, request *http.Request) {
 	storage := app.GetStorage()
 	session, err := app.GetSession(request)
 	if err != nil {
-		log.Println("Could not get user session")
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		log.Println("Could not get user session.", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -25,8 +25,8 @@ func SaveLinks(writer http.ResponseWriter, request *http.Request) {
 
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		log.Println("Error occurred during reading request body")
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		log.Println("Error occurred during reading request body.", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	defer request.Body.Close()
@@ -34,8 +34,8 @@ func SaveLinks(writer http.ResponseWriter, request *http.Request) {
 	var links []model.Link
 	err = json.Unmarshal(body, &links)
 	if err != nil {
-		log.Println("Error occurred parsing links from user")
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		log.Println("Error occurred parsing links from user.", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 
@@ -45,8 +45,8 @@ func SaveLinks(writer http.ResponseWriter, request *http.Request) {
 	err = storage.SaveUser(user)
 
 	if err != nil {
-		log.Println("Cannot save user links")
-		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		log.Println("Cannot save user links.", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	log.Printf("User links '%s' saved successfully.\n", user.Id)
