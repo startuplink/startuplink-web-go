@@ -31,7 +31,7 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	returnTo, err := url.Parse(scheme + "://" + r.Host)
 	if err != nil {
-		http.Error(w, "Cannot parse url.", err.Error())
+		log.Println(w, "Cannot parse url.", err.Error())
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
