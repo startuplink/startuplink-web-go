@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"github.com/dlyahov/startuplink-web-go/backend/app"
 	"log"
 	"net/http"
 	"net/url"
@@ -39,20 +38,14 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	parameters.Add("client_id", os.Getenv("AUTH0_CLIENT_ID"))
 	logoutUrl.RawQuery = parameters.Encode()
 
-	session, err := app.GetSession(r)
-	if err != nil {
-		log.Println("Error occurred:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
 	// clean session
-	session.Options.MaxAge = -1
-	err = session.Save(r, w)
-	if err != nil {
-		log.Println("Can not save user session: " + err.Error())
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
+	cookie := &http.Cookie{
+		Name:   "auth-session",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
 	}
+	http.SetCookie(w, cookie)
+
 	http.Redirect(w, r, logoutUrl.String(), http.StatusTemporaryRedirect)
 }
