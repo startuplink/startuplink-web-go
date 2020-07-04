@@ -15,6 +15,8 @@ type Authenticator struct {
 	Ctx      context.Context
 }
 
+const RedirectUrlSessionVar = "redirect_url"
+
 func newAuthenticator(host string) (*Authenticator, error) {
 	ctx := context.Background()
 	config := app.GetAuth0Config()
@@ -52,6 +54,15 @@ func IsAuthenticated(w http.ResponseWriter, r *http.Request, next http.HandlerFu
 
 	if _, ok := session.Values["profile"]; !ok {
 		log.Println("User is not authenticated. Redirect to login page")
+
+		session.AddFlash(r.URL.Path, RedirectUrlSessionVar)
+		err := session.Save(r, w)
+		if err != nil {
+			log.Println("Can not save user session: " + err.Error())
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	} else {
 		log.Println("Proceed user request")

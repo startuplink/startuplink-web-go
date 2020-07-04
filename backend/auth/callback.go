@@ -100,6 +100,17 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("User was found with id %s\n", user.Id)
-	// Redirect to logged in page
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+
+	redirectUrl := "/home"
+	if flashes := session.Flashes(RedirectUrlSessionVar); len(flashes) == 1 {
+
+		// Redirect to the requested page if needed
+		log.Println("redirect url found")
+		redirectUrl = flashes[0].(string)
+	} else {
+		log.Println("redirect url not found")
+	}
+
+	log.Println("Redirect user after login to: ", redirectUrl)
+	http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
 }
