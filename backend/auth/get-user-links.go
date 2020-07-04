@@ -26,6 +26,12 @@ func GetUserLinks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	links, err := json.Marshal(user.Links)
+	if err != nil {
+		log.Println("Cannot parse JSON from user object: ", user.Links)
+		log.Printf("Error: %s", err.Error())
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Add("Content-Type", "application/json")
 	_, err = w.Write(links)

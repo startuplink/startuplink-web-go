@@ -102,7 +102,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("User was found with id %s\n", user.Id)
 
 	redirectUrl := "/home"
-	if flashes := session.Flashes("redirect_url"); len(flashes) == 1 {
+	if flashes := session.Flashes(RedirectUrlSessionVar); len(flashes) == 1 {
 
 		// Redirect to the requested page if needed
 		log.Println("redirect url found")
