@@ -14,7 +14,7 @@ func GreetingHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	if _, ok := session.Values["profile"]; !ok {
+	if _, ok := session.Values[UserIdSessionVar]; !ok {
 		err := app.GetRenderer().RenderTemplate("greeting.html", writer, map[string]interface{}{})
 		if err != nil {
 			log.Println(err)

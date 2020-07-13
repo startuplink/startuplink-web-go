@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"github.com/dlyahov/startuplink-web-go/backend/app"
+	"github.com/dlyahov/startuplink-web-go/backend/auth"
 	"github.com/dlyahov/startuplink-web-go/backend/model"
 	"io/ioutil"
 	"log"
@@ -21,7 +22,14 @@ func SaveLinks(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	user := session.Values["user"].(*model.User)
+	userId := session.Values[auth.UserIdSessionVar].(string)
+	user, err := app.GetStorage().FindUser(userId)
+	if err != nil {
+		log.Println("Can not get user info")
+		log.Printf("Error: %s", err.Error())
+		http.Error(writer, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {

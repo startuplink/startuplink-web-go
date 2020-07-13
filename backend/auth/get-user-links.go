@@ -3,7 +3,6 @@ package auth
 import (
 	"encoding/json"
 	"github.com/dlyahov/startuplink-web-go/backend/app"
-	"github.com/dlyahov/startuplink-web-go/backend/model"
 	"log"
 	"net/http"
 )
@@ -16,8 +15,8 @@ func GetUserLinks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userInSession := session.Values["user"].(*model.User)
-	user, err := app.GetStorage().FindUser(userInSession.Id)
+	userId := session.Values[UserIdSessionVar].(string)
+	user, err := app.GetStorage().FindUser(userId)
 	if err != nil {
 		log.Println("Can not get user info")
 		log.Printf("Error: %s", err.Error())

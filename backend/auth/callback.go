@@ -19,7 +19,14 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.URL.Query().Get("state") != session.Values["state"] {
+	state := session.Flashes(StateSessionVar)
+	if len(state) != 1 {
+		log.Println("State parameter was not set. Probably, user didn't call login page.")
+		http.Error(w, "Invalid state parameter", http.StatusBadRequest)
+		return
+	}
+
+	if r.URL.Query().Get("state") != state[0] {
 		log.Println("State is not valid from user!")
 		http.Error(w, "Invalid state parameter", http.StatusBadRequest)
 		return
@@ -62,13 +69,11 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 	var profile map[string]interface{}
 	if err := idToken.Claims(&profile); err != nil {
 		log.Println("Failed to verify ID Token: " + err.Error())
+
 		http.Error(w, "Failed to verify ID Token", http.StatusInternalServerError)
 		return
 	}
 
-	session.Values["id_token"] = rawIDToken
-	session.Values["access_token"] = token.AccessToken
-	session.Values["profile"] = profile
 	var storage = app.GetStorage()
 	user, err := storage.FindUser(profile["sub"].(string))
 
@@ -91,7 +96,7 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session.Values["user"] = user
+	session.Values[UserIdSessionVar] = user.Id
 	err = session.Save(r, w)
 	if err != nil {
 		log.Println("Can not save user session: " + err.Error())

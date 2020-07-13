@@ -16,6 +16,8 @@ type Authenticator struct {
 }
 
 const RedirectUrlSessionVar = "redirect_url"
+const UserIdSessionVar = "user_id"
+const StateSessionVar = "state"
 
 func newAuthenticator(host string) (*Authenticator, error) {
 	ctx := context.Background()
@@ -52,7 +54,7 @@ func IsAuthenticated(w http.ResponseWriter, r *http.Request, next http.HandlerFu
 		return
 	}
 
-	if _, ok := session.Values["profile"]; !ok {
+	if _, ok := session.Values[UserIdSessionVar]; !ok {
 		log.Println("User is not authenticated. Redirect to login page")
 
 		session.AddFlash(r.URL.Path, RedirectUrlSessionVar)
