@@ -25,7 +25,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session.AddFlash(state, StateSessionVar)
+	session.Values[StateSessionVar] = state
+
 	err = session.Save(r, w)
 	if err != nil {
 		log.Println("Could not save user session for request. ", err.Error())
