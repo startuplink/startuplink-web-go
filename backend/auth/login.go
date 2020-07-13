@@ -24,7 +24,8 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	session.Values["state"] = state
+
+	session.AddFlash(state, StateSessionVar)
 	err = session.Save(r, w)
 	if err != nil {
 		log.Println("Could not save user session for request. ", err.Error())
