@@ -19,18 +19,13 @@ func CallbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	state := session.Flashes(StateSessionVar)
-	if len(state) != 1 {
-		log.Println("State parameter was not set. Probably, user didn't call login page.")
-		http.Error(w, "Invalid state parameter", http.StatusBadRequest)
-		return
-	}
-
-	if r.URL.Query().Get("state") != state[0] {
+	state := session.Values[StateSessionVar].(string)
+	if r.URL.Query().Get("state") != state {
 		log.Println("State is not valid from user!")
 		http.Error(w, "Invalid state parameter", http.StatusBadRequest)
 		return
 	}
+	session.Values[StateSessionVar] = nil
 
 	authenticator, err := newAuthenticator(r.Host)
 	if err != nil {
