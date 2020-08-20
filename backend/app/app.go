@@ -13,8 +13,8 @@ import (
 )
 
 type Auth0Config struct {
-	Auth0ClientId     string `long:"auth0 client id" env:"AUTH0_CLIENT_ID" description:"client id of auht0"`
-	Auth0ClientSecret string `long:"auth0 client secret" env:"AUTH0_CLIENT_SECRET" description:"client secret of auht0"`
+	Auth0ClientId     string `long:"auth0 client id" env:"AUTH0_CLIENT_ID" description:"client id of auth0"`
+	Auth0ClientSecret string `long:"auth0 client secret" env:"AUTH0_CLIENT_SECRET" description:"client secret of auth0"`
 	Auth0Domain       string `long:"auth0 domain" env:"AUTH0_DOMAIN" description:"domain of auth0 client"`
 }
 
@@ -26,10 +26,7 @@ type App struct {
 	profile     Profile
 }
 
-var (
-	//revision = "unknown"
-	app App
-)
+var app App
 
 const (
 	sessionName         = "auth-session"
