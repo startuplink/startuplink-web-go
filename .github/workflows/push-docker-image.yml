@@ -38,10 +38,10 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             docker volume create boltdb_store
-            if [ $(docker ps | grep ${{ secrets.CONTAINER_NAME }} | wc -l) -gt 0 ]
+            if [ $(docker ps -a | grep startupLinkWeb | wc -l) -gt 0 ]
             then
-              docker stop ${{ secrets.CONTAINER_NAME }}
-              docker rm --force ${{ secrets.CONTAINER_NAME }}
+              docker stop startupLinkWeb
+              docker rm --force startupLinkWeb
               echo "Container stopped"
             fi
             docker run -d -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
