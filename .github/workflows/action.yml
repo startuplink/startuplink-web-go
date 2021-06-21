@@ -15,9 +15,9 @@ jobs:
         with:
           version: v1.41.1
           args: --disable-all --tests=false --enable=unconvert \
-            --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
-            --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck \
-            --enable=ineffassign --enable=varcheck
+            --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
+            --enable=varcheck --enable=deadcode --enable=typecheck \
+            --enable=varcheck
           skip-go-installation: true
   build:
     runs-on: ubuntu-latest
