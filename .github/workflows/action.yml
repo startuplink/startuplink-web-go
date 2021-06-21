@@ -17,7 +17,7 @@ jobs:
         args: --disable-all --tests=false --enable=unconvert \
           --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
           --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck \
-          --enable=ineffassign --enable=varcheck ./...
+          --enable=ineffassign --enable=varcheck
         skip-go-installation: true
   build:
     runs-on: ubuntu-latest
