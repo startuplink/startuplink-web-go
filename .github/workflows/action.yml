@@ -5,12 +5,25 @@ on:
 
 
 jobs:
+  golangci:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v2.5.2
+      with:
+        # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
+        version: v1.29
+        args: --out-format=tab --disable-all --tests=false --enable=unconvert \
+          --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
+          --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck \
+          --enable=ineffassign --enable=varcheck ./...
+        skip-go-installation: true
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v1
-
       - name: install go
         uses: actions/setup-go@v1
         with:
@@ -18,15 +31,3 @@ jobs:
       - name: build and test backend
         run: |
           go test -mod=vendor -timeout=60s -covermode=count -coverprofile=$GITHUB_WORKSPACE/profile.cov_tmp ./...
-      - name: install golangci-lint and goveralls
-        run: |
-          curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $GITHUB_WORKSPACE v1.20.0
-          go get -u github.com/mattn/goveralls
-
-      - name: run backend linters
-        run: |
-          cd backend
-          $GITHUB_WORKSPACE/golangci-lint run --out-format=tab --disable-all --tests=false --enable=unconvert \
-            --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell \
-            --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck \
-            --enable=ineffassign --enable=varcheck ./... ;
