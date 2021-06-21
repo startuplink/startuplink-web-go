@@ -1,15 +1,14 @@
 package main
 
 import (
-	"github.com/codegangsta/negroni"
-	"github.com/dlyahov/startuplink-web-go/backend/app"
-	"github.com/dlyahov/startuplink-web-go/backend/auth"
-	"github.com/dlyahov/startuplink-web-go/backend/controller"
-	"github.com/gorilla/csrf"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/codegangsta/negroni"
+	"github.com/dlyahov/startuplink-web-go/backend/app"
+	"github.com/gorilla/csrf"
+	"github.com/gorilla/mux"
 )
 
 const (
@@ -20,20 +19,25 @@ const (
 func StartServer() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/login", auth.LoginHandler)
-	r.HandleFunc("/logout", auth.LogoutHandler)
-	r.HandleFunc("/callback", auth.CallbackHandler)
+	authHandler := app.GetAuthenticationHandler()
+	adminAuthHandler := app.GetAdminAuthenticationHandler()
+	linksHanlder := app.GetLinksHandler()
+	greetingHandler := app.GetGreetingHandler()
+
+	r.HandleFunc("/login", authHandler.LoginHandler)
+	r.HandleFunc("/logout", authHandler.LogoutHandler)
+	r.HandleFunc("/callback", authHandler.CallbackHandler)
 
 	r.Handle("/get-links", negroni.New(
-		negroni.HandlerFunc(auth.IsAuthenticated),
-		negroni.Wrap(http.HandlerFunc(auth.GetUserLinks)),
+		negroni.HandlerFunc(authHandler.IsAuthenticated),
+		negroni.Wrap(http.HandlerFunc(linksHanlder.GetUserLinks)),
 	))
 
-	r.HandleFunc("/", auth.GreetingHandler)
+	r.HandleFunc("/", greetingHandler.GreetingHandler)
 
 	r.Handle("/home", negroni.New(
-		negroni.HandlerFunc(auth.IsAuthenticated),
-		negroni.Wrap(http.HandlerFunc(controller.ShowLinks)),
+		negroni.HandlerFunc(authHandler.IsAuthenticated),
+		negroni.Wrap(http.HandlerFunc(linksHanlder.ShowLinks)),
 	))
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
@@ -61,9 +65,17 @@ func StartServer() {
 	api.Use(csrfMiddleware)
 
 	api.Handle("/save", negroni.New(
-		negroni.HandlerFunc(auth.IsAuthenticated),
-		negroni.Wrap(http.HandlerFunc(controller.SaveLinks)),
+		negroni.HandlerFunc(authHandler.IsAuthenticated),
+		negroni.Wrap(http.HandlerFunc(linksHanlder.SaveLinks)),
 	)).Methods("POST")
+
+	adminApi := r.PathPrefix("/admin/api").Subrouter()
+	adminApi.Use(adminAuthHandler.IsAdminAuthenticated)
+
+	adminApi.HandleFunc("/all-data", func(rw http.ResponseWriter, r *http.Request) {
+		rw.Write([]byte("test repsonse"))
+		rw.WriteHeader(http.StatusOK)
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
