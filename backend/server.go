@@ -73,7 +73,7 @@ func StartServer() {
 	adminApi.Use(adminAuthHandler.IsAdminAuthenticated)
 
 	adminApi.HandleFunc("/all-data", func(rw http.ResponseWriter, r *http.Request) {
-		rw.Write([]byte("test repsonse"))
+		rw.Write([]byte("test response"))
 		rw.WriteHeader(http.StatusOK)
 	})
 
