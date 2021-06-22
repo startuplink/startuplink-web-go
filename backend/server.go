@@ -69,13 +69,10 @@ func StartServer() {
 		negroni.Wrap(http.HandlerFunc(linksHanlder.SaveLinks)),
 	)).Methods("POST")
 
+	adminHandler := app.GetAdminHandler()
 	adminApi := r.PathPrefix("/admin/api").Subrouter()
 	adminApi.Use(adminAuthHandler.IsAdminAuthenticated)
-
-	adminApi.HandleFunc("/all-data", func(rw http.ResponseWriter, r *http.Request) {
-		rw.Write([]byte("test response"))
-		rw.WriteHeader(http.StatusOK)
-	})
+	adminApi.HandleFunc("/all-data", adminHandler.GetAllData)
 
 	port := os.Getenv("PORT")
 	if port == "" {

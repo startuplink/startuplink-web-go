@@ -21,6 +21,7 @@ type BoltConfig struct {
 type Storage interface {
 	SaveUser(user *model.User) error
 	FindUser(id string) (*model.User, error)
+	GetAllUsers() ([]model.User, error)
 }
 
 var (
@@ -115,4 +116,27 @@ func (boltDb *BoltDb) FindUser(id string) (*model.User, error) {
 		return &user, err
 	}
 	return &user, nil
+}
+
+func (boltDb *BoltDb) GetAllUsers() ([]model.User, error) {
+	var users []model.User
+	err := boltDb.db.View(func(tx *bolt.Tx) error {
+		bucket := tx.Bucket([]byte(userBuckets))
+		cursor := bucket.Cursor()
+
+		for k, v := cursor.First(); k != nil; k, v = cursor.Next() {
+			var user model.User
+			err := json.Unmarshal(v, &user)
+			if err != nil {
+				return errors.Wrapf(err, "Could not marshal user with id %s", k)
+			}
+			users = append(users, user)
+		}
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
