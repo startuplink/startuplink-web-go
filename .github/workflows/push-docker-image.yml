@@ -53,5 +53,6 @@ jobs:
               -e COOKIE_SECRET_KEY=${{ secrets.COOKIE_SECRET_KEY }} \
               -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
               -e PROFILE=prod \
+              -e ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} \
               -v boltdb_store:/backend/var/store \
               -p 8080:8080 aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
