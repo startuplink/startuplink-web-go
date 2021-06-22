@@ -39,5 +39,4 @@ func (h Handler) GetUserLinks(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error: %s", err.Error())
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
-
 }

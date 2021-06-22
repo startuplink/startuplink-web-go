@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/gob"
+	"github.com/dlyahov/startuplink-web-go/backend/admin"
 	"github.com/dlyahov/startuplink-web-go/backend/authentication"
 	"github.com/dlyahov/startuplink-web-go/backend/greeting"
 	"github.com/dlyahov/startuplink-web-go/backend/links"
@@ -16,9 +17,10 @@ import (
 )
 
 type App struct {
-	renderer *render.Renderer
-	session  sessions.Store
-	storage  store.Storage
+	renderer     *render.Renderer
+	session      sessions.Store
+	storage      store.Storage
+	adminHandler admin.AdminHandler
 
 	authenticationHandler      authentication.Autenticator
 	adminAuthenticationHandler authentication.AdminAuthentication
@@ -81,6 +83,7 @@ func Init() {
 	authenticationHandler := authentication.NewHandler(session, storage, auth0Client, adminPassword)
 	greetingHandler := greeting.NewHandler(session, renderer)
 	linkHandler := links.NewHandler(session, storage, renderer)
+	adminHandler := admin.NewHandler(storage)
 
 	app = App{
 		renderer:                   renderer,
@@ -92,6 +95,7 @@ func Init() {
 		adminAuthenticationHandler: authenticationHandler,
 		greetingHandler:            greetingHandler,
 		linksHandler:               linkHandler,
+		adminHandler:               adminHandler,
 	}
 
 	gob.Register(map[string]interface{}{})
@@ -132,4 +136,8 @@ func GetGreetingHandler() *greeting.Handler {
 
 func GetLinksHandler() *links.Handler {
 	return app.linksHandler
+}
+
+func GetAdminHandler() admin.AdminHandler {
+	return app.adminHandler
 }
