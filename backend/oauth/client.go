@@ -55,7 +55,7 @@ func NewAuth0Client(host string, authConfig *Auth0Config) (Auth0Client, error) {
 	conf := oauth2.Config{
 		ClientID:     authConfig.Auth0ClientId,
 		ClientSecret: authConfig.Auth0ClientSecret,
-		RedirectURL:  "http://" + host + "/callback",
+		RedirectURL:  os.Getenv("AUTH0_CALLBACK_URL"),
 		Endpoint:     provider.Endpoint(),
 		Scopes:       []string{oidc.ScopeOpenID, "profile"},
 	}
