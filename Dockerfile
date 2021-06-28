@@ -1,5 +1,5 @@
 # build app
-FROM golang:1.13.5-alpine3.11 as builder
+FROM golang:1.15.13-alpine3.14 as builder
 
 ENV \
     GO111MODULE=on \
