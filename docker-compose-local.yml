@@ -13,4 +13,4 @@ services:
     volumes:
       - ./var:/backend/var
     env_file:
-      - .env.local
+      - .env
