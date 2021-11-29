@@ -73,6 +73,7 @@ func StartServer() {
 	adminApi := r.PathPrefix("/admin/api").Subrouter()
 	adminApi.Use(adminAuthHandler.IsAdminAuthenticated)
 	adminApi.HandleFunc("/all-data", adminHandler.GetAllData)
+	adminApi.HandleFunc("/export-db", adminHandler.DumpDatabase).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {
