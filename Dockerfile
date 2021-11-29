@@ -1,9 +1,8 @@
 # build app
-FROM golang:1.15.13-alpine3.14 as builder
+FROM golang:1.17.3-alpine3.14 as builder
 
 ENV \
-    GO111MODULE=on \
-    GOFLAGS="-mod=vendor"
+    GO111MODULE=on
 
 ADD backend /build/backend
 ADD .git /build/.git
