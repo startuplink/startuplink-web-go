@@ -44,7 +44,7 @@ func NewStorage() (*BoltDb, error) {
 	}
 
 	if _, err := os.Stat(boltConfig.Path); os.IsNotExist(err) {
-		if err := os.MkdirAll("var/store", os.ModePerm); err != nil {
+		if err := os.MkdirAll(boltConfig.Path, os.ModePerm); err != nil {
 			log.Println("Cannot create bolt db path. ", err)
 			return nil, err
 		}
