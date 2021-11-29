@@ -6,6 +6,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	"github.com/pkg/errors"
 	bolt "go.etcd.io/bbolt"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -22,6 +23,7 @@ type Storage interface {
 	SaveUser(user *model.User) error
 	FindUser(id string) (*model.User, error)
 	GetAllUsers() ([]model.User, error)
+	DumpDatabase(w io.Writer) (error, int)
 }
 
 var (
@@ -42,7 +44,7 @@ func NewStorage() (*BoltDb, error) {
 	}
 
 	if _, err := os.Stat(boltConfig.Path); os.IsNotExist(err) {
-		if err := os.Mkdir(boltConfig.Path, 0700); err != nil {
+		if err := os.MkdirAll(boltConfig.Path, os.ModePerm); err != nil {
 			log.Println("Cannot create bolt db path. ", err)
 			return nil, err
 		}
@@ -139,4 +141,24 @@ func (boltDb *BoltDb) GetAllUsers() ([]model.User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (boltDb *BoltDb) DumpDatabase(w io.Writer) (error, int) {
+	var size int
+	err := boltDb.db.View(func(tx *bolt.Tx) error {
+		size = int(tx.Size())
+		_, err := tx.WriteTo(w)
+		return err
+	})
+	return err, size
+}
+
+func (boltDb *BoltDb) RestoreDatabase(w io.Writer) (error, int) {
+	var size int
+	err := boltDb.db.View(func(tx *bolt.Tx) error {
+		size = int(tx.Size())
+		_, err := tx.WriteTo(w)
+		return err
+	})
+	return err, size
 }

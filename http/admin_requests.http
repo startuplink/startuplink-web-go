@@ -1,6 +1,10 @@
-GET http://localhost:8080/admin/api/all-data
+GET {{url}}/admin/api/all-data
 Authorization: Basic admin password
 
 ###
-GET https://startuplink-web.com/admin/api/all-data
+GET {{url}}/admin/api/all-data
+Authorization: Basic {{user}} {{adminPassword}}
+
+###
+GET {{url}}/admin/api/export-db
 Authorization: Basic {{user}} {{adminPassword}}

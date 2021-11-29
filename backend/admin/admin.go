@@ -2,13 +2,17 @@ package admin
 
 import (
 	json "encoding/json"
+	"fmt"
 	"github.com/dlyahov/startuplink-web-go/backend/store"
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 type AdminHandler interface {
 	GetAllData(writer http.ResponseWriter, request *http.Request)
+	DumpDatabase(w http.ResponseWriter, request *http.Request)
 }
 
 type handler struct {
@@ -39,4 +43,18 @@ func (h handler) GetAllData(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		log.Printf("Cannot write users to output. %v\n", err)
 	}
+}
+
+func (h handler) DumpDatabase(w http.ResponseWriter, request *http.Request) {
+	fileName := fmt.Sprintf("%s.db", time.Now().Format("2006_01_02T15_04"))
+
+	err, size := h.storage.DumpDatabase(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, fileName))
+	w.Header().Set("Content-Length", strconv.Itoa(size))
 }
