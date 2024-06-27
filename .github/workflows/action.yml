@@ -2,7 +2,7 @@ name: build
 
 on:
   pull_request:
-
+  workflow_dispatch:
 
 jobs:
   golangci:
@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2.5.2
+        uses: golangci/golangci-lint-action@v6.0.1
         with:
-          version: v1.41.1
-          args: --disable-all --tests=false --enable=unconvert --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck  --enable=ineffassign --enable=varcheck
+          version: v1.59
+          args: --disable-all --tests=false --enable=unconvert --enable=gosimple --enable=staticcheck --enable=unused --enable=gosec --enable=gocyclo --enable=dupl --enable=misspell --enable=unparam --enable=typecheck  --enable=ineffassign
           skip-go-installation: true
   build:
     runs-on: ubuntu-latest
