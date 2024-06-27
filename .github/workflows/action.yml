@@ -14,7 +14,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6.0.1
         with:
           version: v1.59
-          args: --disable-all --tests=false --enable=unconvert --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck  --enable=ineffassign --enable=varcheck
+          args: --disable-all --tests=false --enable=unconvert --enable=gosimple --enable=staticcheck --enable=unused --enable=gosec --enable=gocyclo --enable=dupl --enable=misspell --enable=unparam --enable=typecheck  --enable=ineffassign
           skip-go-installation: true
   build:
     runs-on: ubuntu-latest
