@@ -11,9 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2.5.2
+        uses: golangci/golangci-lint-action@v6.0.1
         with:
-          version: v1.41.1
+          version: v1.59
           args: --disable-all --tests=false --enable=unconvert --enable=megacheck --enable=structcheck --enable=gas --enable=gocyclo --enable=dupl --enable=misspell --enable=unparam --enable=varcheck --enable=deadcode --enable=typecheck  --enable=ineffassign --enable=varcheck
           skip-go-installation: true
   build:
