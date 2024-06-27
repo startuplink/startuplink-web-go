@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/codegangsta/negroni"
 	"github.com/dlyahov/startuplink-web-go/backend/app"
@@ -79,8 +80,14 @@ func StartServer() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	server := &http.Server{
+		Addr:              ":1234",
+		ReadHeaderTimeout: 3 * time.Second,
+		Handler:           csrfMiddleware(r),
+	}
 	log.Println("Start app on port: ", port)
-	log.Fatal(http.ListenAndServe(":"+port, csrfMiddleware(r)))
+	log.Fatal(server.ListenAndServe())
 }
 
 func faviconHandler(w http.ResponseWriter, r *http.Request) {
