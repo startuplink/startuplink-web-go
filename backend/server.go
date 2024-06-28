@@ -82,7 +82,7 @@ func StartServer() {
 	}
 
 	server := &http.Server{
-		Addr:              ":1234",
+		Addr:              ":" + port,
 		ReadHeaderTimeout: 3 * time.Second,
 		Handler:           csrfMiddleware(r),
 	}
