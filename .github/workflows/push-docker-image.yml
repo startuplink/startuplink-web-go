@@ -45,15 +45,17 @@ jobs:
               docker rm --force startupLinkWeb
               echo "Container stopped"
             fi
-            docker run -d -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
+            docker run --network=host --detach \
               --name ${{ secrets.CONTAINER_NAME }} \
-              -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
-              -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
-              -e STORE_BOLT_DB=/backend/var/store \
-              -e COOKIE_AUTH_KEY=${{ secrets.COOKIE_AUTH_KEY }} \
-              -e COOKIE_SECRET_KEY=${{ secrets.COOKIE_SECRET_KEY }} \
-              -e AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
-              -e PROFILE=prod \
-              -e ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} \
-              -v boltdb_store:/backend/var/store \
-              -p 8080:8080 aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
+              --env AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
+              --env AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
+              --env AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
+              --env STORE_BOLT_DB=/backend/var/store \
+              --env COOKIE_AUTH_KEY=${{ secrets.COOKIE_AUTH_KEY }} \
+              --env COOKIE_SECRET_KEY=${{ secrets.COOKIE_SECRET_KEY }} \
+              --env AUTH0_CALLBACK_URL=${{ secrets.HOST_DOMAIN }}/callback \
+              --env PROFILE=prod \
+              --env ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} \
+              --volume boltdb_store:/backend/var/store \
+              --publish 8080:8080 \
+              aemdeveloper/startuplink-web-go:${{ steps.image.outputs.image_tag }}
