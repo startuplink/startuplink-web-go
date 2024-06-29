@@ -11,7 +11,7 @@ type AdminAuthentication interface {
 	IsAdminAuthenticated(next http.Handler) http.Handler
 }
 
-func (h Handler) IsAdminAuthenticated(next http.Handler) http.Handler {
+func (h *Handler) IsAdminAuthenticated(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader, ok := r.Header["Authorization"]
 		if !ok {

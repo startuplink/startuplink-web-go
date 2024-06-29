@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func (h Handler) LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	domain := os.Getenv("AUTH0_DOMAIN")
 
 	logoutUrl, err := url.Parse("https://" + domain)
