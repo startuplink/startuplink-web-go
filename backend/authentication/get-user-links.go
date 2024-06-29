@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (h Handler) GetUserLinks(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetUserLinks(w http.ResponseWriter, r *http.Request) {
 	session, err := h.sessionsStore.Get(r, SessionName)
 	if err != nil {
 		log.Println("Error occurred:", err)

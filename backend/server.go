@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/codegangsta/negroni"
 	"github.com/dlyahov/startuplink-web-go/backend/app"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
@@ -29,20 +28,15 @@ func StartServer() {
 	r.HandleFunc("/logout", authHandler.LogoutHandler)
 	r.HandleFunc("/callback", authHandler.CallbackHandler)
 
-	r.Handle("/get-links", negroni.New(
-		negroni.HandlerFunc(authHandler.IsAuthenticated),
-		negroni.Wrap(http.HandlerFunc(linksHanlder.GetUserLinks)),
-	))
+	r.Handle("/get-links", authHandler.AuthenticationMiddleware(linksHanlder.GetUserLinks))
 
 	r.HandleFunc("/", greetingHandler.GreetingHandler)
 
-	r.Handle("/home", negroni.New(
-		negroni.HandlerFunc(authHandler.IsAuthenticated),
-		negroni.Wrap(http.HandlerFunc(linksHanlder.ShowLinks)),
-	))
+	r.Handle("/home", authHandler.AuthenticationMiddleware(linksHanlder.ShowLinks))
 
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/",
-		http.FileServer(http.Dir("static/"))))
+	r.PathPrefix("/static/").Handler(
+		http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))),
+	)
 
 	r.HandleFunc("/favicon.ico", faviconHandler)
 	r.HandleFunc("/ping", healthCheck)
@@ -65,10 +59,7 @@ func StartServer() {
 	api := r.PathPrefix("/api").Subrouter()
 	api.Use(csrfMiddleware)
 
-	api.Handle("/save", negroni.New(
-		negroni.HandlerFunc(authHandler.IsAuthenticated),
-		negroni.Wrap(http.HandlerFunc(linksHanlder.SaveLinks)),
-	)).Methods("POST")
+	api.Handle("/save", authHandler.AuthenticationMiddleware(linksHanlder.SaveLinks)).Methods("POST")
 
 	adminHandler := app.GetAdminHandler()
 	adminApi := r.PathPrefix("/admin/api").Subrouter()
