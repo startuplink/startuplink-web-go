@@ -1,5 +1,5 @@
 # build app
-FROM golang:1.18-alpine3.15 as builder
+FROM golang:1.22.4-alpine3.20 as builder
 RUN apk --no-cache add git
 
 ENV \
@@ -16,7 +16,7 @@ RUN go build -o startuplink-web -ldflags="-s -w" .
 # todo: add versioning for image
 
 # pack app into working container
-FROM alpine:3.11
+FROM alpine:3.20
 
 RUN apk upgrade && apk add --no-cache curl
 
