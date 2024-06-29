@@ -7,7 +7,7 @@ import (
 	"github.com/dlyahov/startuplink-web-go/backend/render"
 	"github.com/dlyahov/startuplink-web-go/backend/store"
 	"github.com/gorilla/sessions"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -45,7 +45,7 @@ func (h Handler) SaveLinks(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	body, err := ioutil.ReadAll(request.Body)
+	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		log.Println("Error occurred during reading request body.", err.Error())
 		http.Error(writer, "Internal server error", http.StatusInternalServerError)
